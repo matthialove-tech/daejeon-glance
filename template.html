@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="refresh" content="600">
+<title>대전 한눈에</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+/* 배치: 위에 분야별 건수 띠, 아래 왼쪽 분야 카드 격자, 오른쪽 키워드·트렌드 옆판 */
+:root{
+  --bg:#f3f5f6; --panel:#ffffff; --ink:#15212b; --muted:#5d6b76; --line:#dde3e7;
+  --accent:#0f6e8c; --accent-soft:#e1f0f5; --rise:#c2410c;
+  --c-incident:#c0392b; --c-politics:#2f5d9e; --c-economy:#1d7a5a; --c-culture:#8e44ad;
+  --c-event:#d17a00; --c-trend:#c2185b; --c-sports:#0f6e8c;
+  --f-display:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f161b; --panel:#172129; --ink:#e6edf1; --muted:#93a3ae; --line:#26343e;
+  --accent:#4fb3d4; --accent-soft:#16323d; --rise:#fb923c;
+  --c-incident:#ef6b5d; --c-politics:#6f9be0; --c-economy:#4cc192; --c-culture:#bb86d6;
+  --c-event:#f0a640; --c-trend:#ef6fa3; --c-sports:#4fb3d4; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 var(--f-body);
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+a{color:inherit;text-decoration:none}
+a:hover .t{text-decoration:underline}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font:400 34px/1 var(--f-display);margin:0;letter-spacing:.5px}
+h1 small{font:500 13px var(--f-body);color:var(--muted);margin-left:10px;letter-spacing:0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:none;color:var(--muted);font:500 13px var(--f-body);padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+#q{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;font:13px var(--f-body);width:200px;max-width:100%}
+
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;border-top:3px solid var(--cc,var(--accent))}
+.chip .n{font:400 26px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.chip .l{font-size:12.5px;color:var(--muted)}
+.chip .new{font-size:11.5px;color:var(--cc)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--cc,var(--accent))}
+
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+@media (max-width:420px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card h2{font:400 19px/1.2 var(--f-display);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.card h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--cc)}
+.card h2 .cnt{font:500 12px var(--f-body);color:var(--muted);margin-left:auto}
+ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.list li{border-top:1px solid var(--line)}
+ul.list li:first-child{border-top:0}
+ul.list a{display:block;padding:8px 0}
+.t{display:block;font-weight:500;text-wrap:pretty;word-break:keep-all;overflow-wrap:anywhere}
+.m{display:flex;gap:8px;font-size:12px;color:var(--muted);margin-top:2px}
+.m .fresh{color:var(--rise);font-weight:600}
+.m .tag{color:var(--cc)}
+.more{margin-top:6px;border:0;background:none;color:var(--accent);font:500 13px var(--f-body);cursor:pointer;padding:4px 0}
+.empty{color:var(--muted);padding:8px 0}
+
+aside{display:flex;flex-direction:column;gap:14px}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 10px;font:13px var(--f-body);cursor:pointer;display:flex;gap:5px;align-items:center}
+.kw button b{font-weight:600;color:var(--muted);font-size:11.5px;font-variant-numeric:tabular-nums}
+.kw button.up{border-color:var(--rise)}
+.kw button.up::after{content:"▲";color:var(--rise);font-size:10px}
+ol.tr{margin:0;padding:0;list-style:none;counter-reset:r}
+ol.tr li{counter-increment:r;display:flex;gap:10px;padding:5px 0;border-top:1px solid var(--line);align-items:baseline}
+ol.tr li:first-child{border-top:0}
+ol.tr li::before{content:counter(r);font:400 16px var(--f-display);color:var(--accent);width:18px;text-align:right}
+ol.tr .v{margin-left:auto;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--muted)}
+.stale{background:#fff4e5;color:#8a4b00;border:1px solid #f0c27a;border-radius:8px;padding:8px 12px}
+@media (prefers-color-scheme:dark){.stale{background:#3a2a12;color:#f5c98a;border-color:#6b4a1c}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>대전 한눈에<small id="upd"></small></h1>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="기간">
+        <button data-h="24" aria-pressed="true">24시간</button>
+        <button data-h="72" aria-pressed="false">3일</button>
+        <button data-h="168" aria-pressed="false">7일</button>
+      </div>
+      <input id="q" type="search" placeholder="제목 검색 (예: 트램)" aria-label="제목 검색">
+    </div>
+  </header>
+  <div id="stale" class="stale" hidden></div>
+  <div class="strip" id="strip"></div>
+  <div class="main">
+    <div class="grid" id="grid"></div>
+    <aside>
+      <section class="card">
+        <h2>대전 키워드 <span class="cnt">최근 24시간 제목</span></h2>
+        <div class="kw" id="kw"></div>
+        <p class="note">▲ 표시는 평소보다 많이 나온 낱말입니다. 누르면 그 낱말로 검색합니다.</p>
+      </section>
+      <section class="card">
+        <h2>전국 실시간 검색어 <span class="cnt">구글 트렌드</span></h2>
+        <ol class="tr" id="tr"></ol>
+      </section>
+      <p class="note">구글 뉴스에서 30분마다 모읍니다. 화면은 10분마다 새로 읽습니다. 기사 제목을 누르면 원문이 열립니다.</p>
+    </aside>
+  </div>
+</div>
+<script>
+const DATA = /*__DATA__*/null;
+const S = {h:24, cat:null, q:"", open:{}};
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const now = () => Math.floor(Date.now()/1000);
+
+function ago(ts){
+  const m = Math.max(0, Math.round((now()-ts)/60));
+  if (m < 60) return m + "분 전";
+  const h = Math.round(m/60);
+  if (h < 24) return h + "시간 전";
+  return Math.round(h/24) + "일 전";
+}
+function inRange(a){ return a.ts >= now() - S.h*3600 && (!S.q || a.title.includes(S.q)); }
+function cc(key){ return `var(--c-${key})`; }
+
+function item(a, showTag){
+  const li = el("li");
+  const link = el("a");
+  if (/^https:\/\//.test(a.link)) { link.href = a.link; link.target = "_blank"; link.rel = "noopener"; }
+  link.append(el("span", "t", a.title));
+  const m = el("span", "m");
+  if (now() - a.ts < 3*3600) m.append(el("span", "fresh", "새 소식"));
+  m.append(el("span", "", ago(a.ts)), el("span", "", a.source));
+  if (a.more) m.append(el("span", "", `같은 소식 ${a.more}건 더`));
+  if (showTag) { const c = DATA.categories.find(c => c.key === a.cat); const t = el("span","tag",c ? c.name : ""); t.style.setProperty("--cc", cc(a.cat)); m.append(t); }
+  link.append(m); li.append(link);
+  return li;
+}
+
+function render(){
+  const list = DATA.articles.filter(inRange);
+  // 분야 띠
+  const strip = $("#strip"); strip.replaceChildren();
+  const all = el("button","chip"); all.setAttribute("aria-pressed", String(!S.cat));
+  all.append(el("span","n",String(list.length)), el("span","l","전체"));
+  all.onclick = () => { S.cat = null; render(); };
+  strip.append(all);
+  for (const c of DATA.categories){
+    const items = list.filter(a => a.cat === c.key);
+    const fresh = items.filter(a => now()-a.ts < 3*3600).length;
+    const b = el("button","chip"); b.style.setProperty("--cc", cc(c.key));
+    b.setAttribute("aria-pressed", String(S.cat === c.key));
+    b.append(el("span","n",String(items.length)), el("span","l",c.name));
+    if (fresh) b.append(el("span","new",`3시간 내 ${fresh}건`));
+    b.onclick = () => { S.cat = S.cat === c.key ? null : c.key; render(); };
+    strip.append(b);
+  }
+  // 카드 격자
+  const grid = $("#grid"); grid.replaceChildren();
+  const cats = S.cat ? DATA.categories.filter(c => c.key === S.cat) : DATA.categories;
+  grid.style.gridTemplateColumns = S.cat ? "minmax(0,1fr)" : "";
+  for (const c of cats){
+    const items = list.filter(a => a.cat === c.key);
+    const card = el("section","card"); card.style.setProperty("--cc", cc(c.key));
+    const h = el("h2"); h.append(el("span","dot"), document.createTextNode(c.name), el("span","cnt",`${items.length}건`));
+    card.append(h);
+    const ul = el("ul","list");
+    const limit = S.cat || S.open[c.key] ? items.length : 6;
+    items.slice(0, limit).forEach(a => ul.append(item(a, false)));
+    if (!items.length) ul.append(el("li","empty", S.q ? "검색어에 맞는 기사가 없습니다." : "이 기간에는 기사가 없습니다. 기간을 늘려 보세요."));
+    card.append(ul);
+    if (!S.cat && items.length > 6){
+      const more = el("button","more", S.open[c.key] ? "접기" : `${items.length-6}건 더 보기`);
+      more.onclick = () => { S.open[c.key] = !S.open[c.key]; render(); };
+      card.append(more);
+    }
+    grid.append(card);
+  }
+}
+
+function renderSide(){
+  const kw = $("#kw");
+  if (!DATA.keywords.length) kw.append(el("span","note","아직 모인 낱말이 적습니다."));
+  for (const k of DATA.keywords){
+    const b = el("button", k.rise ? "up" : ""); b.append(document.createTextNode(k.word), el("b","",String(k.count)));
+    b.onclick = () => { $("#q").value = k.word; S.q = k.word; S.cat = null; render(); };
+    kw.append(b);
+  }
+  const tr = $("#tr");
+  if (!DATA.trends.length) tr.append(el("li","note","지금은 가져오지 못했습니다."));
+  for (const t of DATA.trends.slice(0,10)){
+    const li = el("li"); li.append(el("span","",t.title), el("span","v",t.traffic)); tr.append(li);
+  }
+}
+
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => {
+  S.h = +b.dataset.h;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  render();
+});
+$("#q").addEventListener("input", e => { S.q = e.target.value.trim(); render(); });
+
+$("#upd").textContent = `${DATA.updated} 기준 · 기사 ${DATA.articles.length}건`;
+if (now() - DATA.updatedTs > 3*3600){
+  const s = $("#stale"); s.hidden = false;
+  s.textContent = `마지막으로 모은 때가 ${ago(DATA.updatedTs)}입니다. 맥이 꺼져 있었거나 인터넷이 끊겼을 수 있습니다.`;
+}
+renderSide();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+logs/
+data.json
+dashboard.html
+site/
+자동갱신켜기.sh
+자동갱신끄기.sh
+.DS_Store
+__pycache__/
